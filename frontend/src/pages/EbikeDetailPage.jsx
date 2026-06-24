@@ -21,7 +21,7 @@ export default function EbikeDetailPage() {
   const handleAddToCart = async () => {
     setAdding(true);
     try {
-      await addToCart(product.id, 1, null);
+      await addToCart(product.slug, 1, null);
       alert("Added to cart!");
     } catch (e) {
       alert("Failed to add to cart: " + e.message);
