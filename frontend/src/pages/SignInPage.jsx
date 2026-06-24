@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api/client.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const { isLoggedIn, login, register } = useAuth();
   const [mode, setMode] = useState("login"); // "login" or "register"
   const [form, setForm] = useState({ email: "", password: "", first_name: "", last_name: "" });
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Already logged in — redirect home
+  if (isLoggedIn) {
+    navigate("/");
+    return null;
+  }
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,13 +25,11 @@ export default function SignInPage() {
     setSubmitting(true);
     setError(null);
     try {
-      let result;
       if (mode === "login") {
-        result = await api.login(form.email, form.password);
+        await login(form.email, form.password);
       } else {
-        result = await api.register(form.email, form.password, form.first_name, form.last_name);
+        await register(form.email, form.password, form.first_name, form.last_name);
       }
-      localStorage.setItem("token", result.token);
       navigate("/");
     } catch (err) {
       setError(err.message);
@@ -36,7 +41,7 @@ export default function SignInPage() {
   return (
     <div>
       <h1>{mode === "login" ? "Sign In" : "Create Account"}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="auth-error" style={{ color: "red" }}>{error}</p>}
       <form className="auth-form" onSubmit={handleSubmit}>
         {mode === "register" && (
           <>

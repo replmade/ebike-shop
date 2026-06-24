@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { api } from "../api/client.js";
+import { useAuth } from "./AuthContext.jsx";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
+  const { isLoggedIn, loading } = useAuth();
   const [cart, setCart] = useState(null);
   const [cartCount, setCartCount] = useState(0);
 
@@ -18,8 +20,10 @@ export function CartProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    // Don't fetch cart until auth state is resolved
+    if (loading) return;
     refreshCart();
-  }, [refreshCart]);
+  }, [isLoggedIn, loading, refreshCart]);
 
   const addToCart = useCallback(async (productId, quantity = 1, variantId = null) => {
     const data = await api.addToCart(productId, quantity, variantId);

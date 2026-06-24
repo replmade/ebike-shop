@@ -69,6 +69,23 @@ body {
   color: var(--accent);
 }
 
+.btn-signout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.btn-signout:hover {
+  color: var(--accent);
+}
+
 /* Main content */
 .main-content {
   flex: 1;

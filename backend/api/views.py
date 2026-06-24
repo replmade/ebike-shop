@@ -1,12 +1,10 @@
 """API views for ebike-shop."""
 
-import uuid
-
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.db import transaction
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -46,6 +44,8 @@ class ProductDetailView(generics.RetrieveAPIView):
 
 class CartView(APIView):
     """Get or create cart for the current session/user."""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
     def _get_or_create_cart(self, request):
         if request.user.is_authenticated:
@@ -93,6 +93,8 @@ class CartView(APIView):
 
 class CartItemView(APIView):
     """Update or remove a cart item."""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
     def _get_cart(self, request):
         if request.user.is_authenticated:
@@ -133,6 +135,8 @@ class CartItemView(APIView):
 
 class CheckoutView(APIView):
     """Create an order from the current cart."""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
     @transaction.atomic
     def post(self, request):
@@ -189,6 +193,8 @@ class CheckoutView(APIView):
 
 class RegisterView(APIView):
     """Simple registration endpoint."""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         email = request.data.get("email")
@@ -214,6 +220,8 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     """Login endpoint returning a token."""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         email = request.data.get("email")
@@ -225,6 +233,5 @@ class LoginView(APIView):
         if user is None:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        login(request, user)
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "user": {"id": user.id, "email": user.email}})
