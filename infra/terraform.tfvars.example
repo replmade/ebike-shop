@@ -1,0 +1,20 @@
+# ─── Linode ───
+linode_token = "YOUR_LINODE_API_TOKEN"
+
+# ─── SSH ───
+# Paste your public key or reference a file:
+#   ssh_public_key = file("~/.ssh/id_ed25519.pub")
+ssh_public_key = "ssh-ed25519 AAAA... your-key-here"
+
+# ─── App ───
+django_secret_key         = "GENERATE_WITH_python_-c_'import_secrets;_print(secrets.token_urlsafe(50))'"
+django_superuser_email    = "admin@voltcycle.com"
+django_superuser_password = "CHANGE_ME_strong_password"
+domain                    = "ebike-shop.example.com"  # or "" to skip TLS
+
+# ─── Instance ───
+# instance_label  = "ebike-shop"
+# instance_type   = "g6-nanode-1"
+# linode_region   = "us-east"
+# repo_url        = "https://github.com/replmade/ebike-shop.git"
+# repo_branch     = "master"
