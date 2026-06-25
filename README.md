@@ -1,6 +1,6 @@
 # ebike-shop
 
-Fictional electric bike store for a bug-fixing tutorial.
+A simple ecommerce site to demonstrate fixing bugs with an agent pipeline.
 
 ## Stack
 
