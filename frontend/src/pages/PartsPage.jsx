@@ -33,7 +33,7 @@ export default function PartsPage() {
       <div className="product-grid" style={{ marginTop: "1.5rem" }}>
         {products.map((product) => (
           <div className="product-card" key={product.id}>
-            <img src={product.image_url || "https://placehold.co/400x300/eee/1a1a1a?text=Part"} alt={product.name} />
+            <img src={product.image_url || "/images/48v-battery.jpg"} alt={product.name} />
             <span className="product-type-badge">{product.product_type}</span>
             <h3>{product.name}</h3>
             <p className="price">${product.price}</p>

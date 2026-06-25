@@ -41,7 +41,7 @@ export default function EbikeDetailPage() {
       <Link to="/ebikes" className="nav-link">← Back to E-Bikes</Link>
       <div className="product-detail" style={{ marginTop: "1.5rem" }}>
         <div>
-          <img src={product.image_url || "https://placehold.co/600x400/eee/1a1a1a?text=Ebike"} alt={product.name} />
+          <img src={product.image_url || "/images/voltrider-commuter.jpg"} alt={product.name} />
         </div>
         <div>
           <h1>{product.name}</h1>

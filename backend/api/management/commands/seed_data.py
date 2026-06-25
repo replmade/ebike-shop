@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 "name": "VoltRider Commuter",
                 "description": "Sleek city commuter with smooth pedal assist. Perfect for daily urban rides.",
                 "price_cents": 189900,
-                "image_url": "https://placehold.co/600x400/1a1a1a/e8b923?text=VoltRider+Commuter",
+                "image_url": "/images/voltrider-commuter.jpg",
                 "product_type": "ebike",
             },
         )
@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 "name": "Trailblazer Fat Tire",
                 "description": "Off-road ready with fat tires and a powerful motor for trails and sand.",
                 "price_cents": 229900,
-                "image_url": "https://placehold.co/600x400/1a1a1a/e8b923?text=Trailblazer+Fat+Tire",
+                "image_url": "/images/trailblazer-fat-tire.jpg",
                 "product_type": "ebike",
             },
         )
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                 "name": "CityGlide Folding",
                 "description": "Compact folding ebike for commuters with limited storage space.",
                 "price_cents": 149900,
-                "image_url": "https://placehold.co/600x400/1a1a1a/e8b923?text=CityGlide+Folding",
+                "image_url": "/images/cityglide-folding.jpg",
                 "product_type": "ebike",
             },
         )
@@ -123,7 +123,7 @@ class Command(BaseCommand):
                 "name": "48V 15Ah Replacement Battery",
                 "description": "Compatible with VoltRider and Trailblazer models. 720Wh capacity.",
                 "price_cents": 44900,
-                "image_url": "https://placehold.co/600x400/eee/1a1a1a?text=48V+15Ah+Battery",
+                "image_url": "/images/48v-battery.jpg",
                 "product_type": "part",
             },
         )
@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 "name": "36V 10Ah Replacement Battery",
                 "description": "Compatible with CityGlide Folding. 360Wh capacity.",
                 "price_cents": 29900,
-                "image_url": "https://placehold.co/600x400/eee/1a1a1a?text=36V+10Ah+Battery",
+                "image_url": "/images/36v-battery.jpg",
                 "product_type": "part",
             },
         )
@@ -145,7 +145,7 @@ class Command(BaseCommand):
                 "name": "48V Smart Charger",
                 "description": "Replacement charger for 48V battery systems. LED charge indicator.",
                 "price_cents": 7900,
-                "image_url": "https://placehold.co/600x400/eee/1a1a1a?text=48V+Charger",
+                "image_url": "/images/charger-48v.jpg",
                 "product_type": "part",
             },
         )
@@ -153,13 +153,13 @@ class Command(BaseCommand):
 
         # --- Accessories ---
         accessories = [
-            ("voltcycle-helmet", "VoltCycle Helmet", "Certified urban cycling helmet with LED tail light.", 5900),
-            ("heavy-duty-u-lock", "Heavy-Duty U-Lock", "Hardened steel U-lock with mounting bracket.", 3900),
-            ("rear-cargo-rack", "Rear Cargo Rack", "Aluminum cargo rack, compatible with all VoltCycle models.", 6900),
-            ("front-basket", "Front Basket", "Wicker-style front basket for commuting essentials.", 4500),
-            ("ebike-cover", "Waterproof E-Bike Cover", "Full-coverage waterproof cover for outdoor storage.", 3500),
+            ("voltcycle-helmet", "VoltCycle Helmet", "Certified urban cycling helmet with LED tail light.", 5900, "/images/helmet.jpg"),
+            ("heavy-duty-u-lock", "Heavy-Duty U-Lock", "Hardened steel U-lock with mounting bracket.", 3900, "/images/u-lock.jpg"),
+            ("rear-cargo-rack", "Rear Cargo Rack", "Aluminum cargo rack, compatible with all VoltCycle models.", 6900, "/images/cargo-rack.jpg"),
+            ("front-basket", "Front Basket", "Wicker-style front basket for commuting essentials.", 4500, "/images/front-basket.jpg"),
+            ("ebike-cover", "Waterproof E-Bike Cover", "Full-coverage waterproof cover for outdoor storage.", 3500, "/images/ebike-cover.jpg"),
         ]
-        for slug, name, desc, price in accessories:
+        for slug, name, desc, price, image_url in accessories:
             Product.objects.get_or_create(
                 slug=slug,
                 defaults={
@@ -167,7 +167,7 @@ class Command(BaseCommand):
                     "name": name,
                     "description": desc,
                     "price_cents": price,
-                    "image_url": f"https://placehold.co/600x400/eee/1a1a1a?text={name.replace(' ', '+')}",
+                    "image_url": image_url,
                     "product_type": "accessory",
                 },
             )

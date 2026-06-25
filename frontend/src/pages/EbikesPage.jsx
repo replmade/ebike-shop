@@ -23,7 +23,7 @@ export default function EbikesPage() {
       <div className="product-grid" style={{ marginTop: "1.5rem" }}>
         {products.map((product) => (
           <Link to={`/ebikes/${product.slug}`} key={product.id} className="product-card">
-            <img src={product.image_url || "https://placehold.co/400x300/eee/1a1a1a?text=Ebike"} alt={product.name} />
+            <img src={product.image_url || "/images/voltrider-commuter.jpg"} alt={product.name} />
             <h3>{product.name}</h3>
             <p className="price">${product.price}</p>
           </Link>
