@@ -1,14 +1,15 @@
 """Django settings for ebike-shop backend."""
 
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "demo-secret-key-not-for-production-use"
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "demo-secret-key-not-for-production-use")
 
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -78,8 +79,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# CORS — allow the Vite dev server
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS — allow all in dev, restrict in production
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
 # Django REST Framework
 REST_FRAMEWORK = {
