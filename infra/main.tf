@@ -14,7 +14,9 @@ resource "linode_sshkey" "deploy_key" {
 # ─── Firewall ───
 
 resource "linode_firewall" "app" {
-  label = "${var.instance_label}-fw"
+  label           = "${var.instance_label}-fw"
+  inbound_policy  = "DROP"
+  outbound_policy = "ACCEPT"
 
   inbound {
     label    = "ssh"
@@ -43,35 +45,18 @@ resource "linode_firewall" "app" {
     ipv6     = ["::/0"]
   }
 
-  outbound {
-    label    = "allow-all-out"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "1-65535"
-    ipv4     = ["0.0.0.0/0"]
-    ipv6     = ["::/0"]
-  }
-
-  outbound {
-    label    = "allow-dns-out"
-    action   = "ACCEPT"
-    protocol = "UDP"
-    ports    = "53"
-    ipv4     = ["0.0.0.0/0"]
-    ipv6     = ["::/0"]
-  }
 }
 
 # ─── Instance ───
 
 resource "linode_instance" "app" {
-  label            = var.instance_label
-  image            = "linode/ubuntu24.04"
-  region           = var.linode_region
-  type             = var.instance_type
-  authorized_keys  = [linode_sshkey.deploy_key.ssh_key]
+  label           = var.instance_label
+  image           = "linode/ubuntu24.04"
+  region          = var.linode_region
+  type            = var.instance_type
+  authorized_keys = [linode_sshkey.deploy_key.ssh_key]
   firewall_id     = linode_firewall.app.id
-  tags             = ["ebike-shop", "production"]
+  tags            = ["ebike-shop", "production"]
 
   # Cloud-init: bootstrap the server on first boot
   user_data = templatefile("${path.module}/cloud-init.yaml.tpl", {
