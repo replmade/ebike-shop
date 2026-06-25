@@ -144,6 +144,6 @@ runcmd:
   - systemctl reload nginx
 
   # Provision TLS if a domain is configured
-${ if domain != "" }
+%{ if domain != "" }
   - certbot --nginx -n --agree-tos -m "${django_superuser_email}" -d "${domain}" || echo "TLS setup failed - configure DNS first, then run: certbot --nginx -d ${domain}"
-${ endif }
+%{ endif }

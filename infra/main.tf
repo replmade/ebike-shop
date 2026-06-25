@@ -59,20 +59,22 @@ resource "linode_instance" "app" {
   tags            = ["ebike-shop", "production"]
 
   # Cloud-init: bootstrap the server on first boot
-  user_data = templatefile("${path.module}/cloud-init.yaml.tpl", {
-    django_secret_key         = var.django_secret_key
-    django_superuser_email    = var.django_superuser_email
-    django_superuser_password = var.django_superuser_password
-    domain                    = var.domain
-    repo_url                  = var.repo_url
-    repo_branch               = var.repo_branch
-  })
+  metadata {
+    user_data = base64encode(templatefile("${path.module}/cloud-init.yaml.tpl", {
+      django_secret_key         = var.django_secret_key
+      django_superuser_email    = var.django_superuser_email
+      django_superuser_password = var.django_superuser_password
+      domain                    = var.domain
+      repo_url                  = var.repo_url
+      repo_branch               = var.repo_branch
+    }))
+  }
 }
 
 # ─── Outputs ───
 
 output "instance_ip" {
-  value = linode_instance.app.ip_address
+  value = one(linode_instance.app.ipv4)
 }
 
 output "instance_id" {
@@ -80,5 +82,5 @@ output "instance_id" {
 }
 
 output "ssh_command" {
-  value = "ssh root@${linode_instance.app.ip_address}"
+  value = "ssh root@${one(linode_instance.app.ipv4)}"
 }
