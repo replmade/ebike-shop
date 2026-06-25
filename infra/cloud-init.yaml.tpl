@@ -92,7 +92,7 @@ write_files:
       set -euo pipefail
 
       APP_DIR=/opt/ebike-shop
-      BRANCH="${1:-master}"
+      BRANCH="$${1:-master}"
 
       echo "=== Pulling latest code (branch: $BRANCH) ==="
       cd "$APP_DIR"
