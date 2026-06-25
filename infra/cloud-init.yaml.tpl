@@ -19,9 +19,14 @@ write_files:
     permissions: "0640"
     content: |
       DJANGO_SECRET_KEY=${django_secret_key}
-      DJANGO_ALLOWED_HOSTS=%{ if domain != "" }${domain} www.${domain}%{ else }*%{ endif }
+      DJANGO_ALLOWED_HOSTS=%{ if domain != "" }${domain},www.${domain}%{ else }*%{ endif }
       DJANGO_DEBUG=False
       DJANGO_SETTINGS_MODULE=shop.settings
+
+  # --- tmpfiles for gunicorn socket ---
+  - path: /etc/tmpfiles.d/ebike-shop.conf
+    content: |
+      d /run/ebike-shop 0755 www-data www-data -
 
   # --- Gunicorn systemd unit ---
   - path: /etc/systemd/system/ebike-shop.service
@@ -37,7 +42,7 @@ write_files:
       EnvironmentFile=/opt/ebike-shop/.env
       ExecStart=/opt/ebike-shop/backend/venv/bin/gunicorn \
           --workers 2 \
-          --bind unix:/run/ebike-shop.sock \
+          --bind unix:/run/ebike-shop/ebike-shop.sock \
           --timeout 120 \
           shop.wsgi:application
       Restart=always
@@ -63,7 +68,7 @@ write_files:
           }
 
           location /api/ {
-              proxy_pass http://unix:/run/ebike-shop.sock;
+              proxy_pass http://unix:/run/ebike-shop/ebike-shop.sock;
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -71,7 +76,7 @@ write_files:
           }
 
           location /admin/ {
-              proxy_pass http://unix:/run/ebike-shop.sock;
+              proxy_pass http://unix:/run/ebike-shop/ebike-shop.sock;
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -87,7 +92,7 @@ write_files:
       set -euo pipefail
 
       APP_DIR=/opt/ebike-shop
-      BRANCH="$${1:-master}"
+      BRANCH="${1:-master}"
 
       echo "=== Pulling latest code (branch: $BRANCH) ==="
       cd "$APP_DIR"
@@ -119,8 +124,8 @@ write_files:
       echo "=== Deploy complete ==="
 
 runcmd:
-  # Clone the repo
-  - git clone --branch "${repo_branch}" "${repo_url}" /opt/ebike-shop
+  # Clone the repo (preserve .env written by write_files)
+  - mv /opt/ebike-shop/.env /tmp/ebike-env 2>/dev/null; rm -rf /opt/ebike-shop; git clone --branch "${repo_branch}" "${repo_url}" /opt/ebike-shop; mv /tmp/ebike-env /opt/ebike-shop/.env 2>/dev/null || true
 
   # Initial deploy
   - /usr/local/bin/ebike-deploy "${repo_branch}"
@@ -148,4 +153,3 @@ runcmd:
   - |
     certbot --nginx -n --agree-tos -m ${django_superuser_email} -d ${domain} || echo 'TLS setup failed'
 %{ endif }
-
